@@ -7,7 +7,7 @@ const history =
   req.body?.state?.session?.history ||
   req.body?.state?.user?.history ||
   [];
-const message = req.body?.request?.original_utterance  "";
+const message = req.body?.request?.original_utterance || "";
 try {
 const apiKey = process.env.DEEPSEEK_API_KEY;
 if (!apiKey) {
