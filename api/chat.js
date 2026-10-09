@@ -3,7 +3,7 @@ if (req.method !== "POST") {
 return res.status(405).json({ error: "Method not allowed" });
 }
 const session = req.body?.session;
-const history = req.body?.state?.session?.history  req.body?.state?.user?.history || [];
+const history = req.body?.state?.session?.history || req.body?.state?.user?.history || [];
 const message = req.body?.request?.original_utterance  "";
 try {
 const apiKey = process.env.DEEPSEEK_API_KEY;
@@ -30,8 +30,10 @@ const result = await fetch("https://api.deepseek.com/chat/completions", {
     "Authorization": `Bearer ${apiKey}`
   },
   body: JSON.stringify({
-    model: "deepseek-flash",
-    messages
+    model: "deepseek-chat",
+    messages,
+    max_tokens: 300,
+    temperature: 0.7
   })
 });
 
@@ -50,7 +52,7 @@ const updatedHistory = [
   ...history,
   { role: "user", content: message },
   { role: "assistant", content: answer }
-].slice(-10);
+].slice(-12);
 
 return res.status(200).json({
   version: "1.0",
@@ -59,7 +61,7 @@ return res.status(200).json({
     text: answer.slice(0, 1024),
     end_session: false
   },
-  session_state: {
+  user_state_update: {
     history: updatedHistory
   }
 });
@@ -72,7 +74,7 @@ return res.status(200).json({
     text: "Произошла ошибка при обращении к нейросети. Попробуйте ещё раз.",
     end_session: false
   },
-  session_state: {
+  user_state_update: {
     history: history
   }
 });
