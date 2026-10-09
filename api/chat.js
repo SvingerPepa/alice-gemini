@@ -1,5 +1,4 @@
 module.exports = async function handler(req, res) { const body = req.body  {}; const version = body.version  "1.0"; const session = body.session || {};
-if (req.method !== "POST") { return res.status(200).json({ version, session, response: { text: "Отправь мне вопрос.", end_session: false } }); }
 try { const message = body.request?.original_utterance  body.request?.command  "Поздоровайся и кратко расскажи, что умеешь.";
 const apiKey = process.env.GEMINI_API_KEY;
 
@@ -39,4 +38,4 @@ return res.status(200).json({
     end_session: false
   }
 });
-} catch (error) { return res.status(200).json({ version, session, response: { text: "Не удалось обработать запрос. Попробуй ещё раз.", end_session: false } }); } };
+} catch (error) { return res.status(200).json({ version, session, response: { text: "Не удалось обработать запрос. Проверь ключ Gemini в Vercel.", end_session: false } }); } };
