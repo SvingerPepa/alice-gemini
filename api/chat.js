@@ -28,6 +28,7 @@ const result = await fetch("https://api.deepseek.com/chat/completions", {
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${apiKey}`
+  },
   body: JSON.stringify({
     model: "deepseek-flash",
     messages
@@ -72,7 +73,7 @@ return res.status(200).json({
     end_session: false
   },
   session_state: {
-    history: updateHistory
+    history: history
   }
 });
 }
