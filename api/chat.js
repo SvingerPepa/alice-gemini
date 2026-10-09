@@ -72,7 +72,7 @@ return res.status(200).json({
     end_session: false
   },
   session_state: {
-    history
+    history: updateHistory
   }
 });
 }
