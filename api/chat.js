@@ -3,7 +3,7 @@ if (req.method !== "POST") {
 return res.status(405).json({ error: "Method not allowed" });
 }
 const session = req.body?.session;
-const history = req.body?.state?.session?.history || [];
+const history = req.body?.state?.session?.history  req.body?.state?.user?.history || [];
 const message = req.body?.request?.original_utterance  "";
 try {
 const apiKey = process.env.DEEPSEEK_API_KEY;
