@@ -18,7 +18,7 @@ const result = await fetch("https://api.deepseek.com/chat/completions", {
     "Authorization": `Bearer ${apiKey}`
   },
   body: JSON.stringify({
-    model: "deepseek-chat",
+    model: "deepseek-flash",
     messages: [
       {
         role: "system",
