@@ -1,9 +1,16 @@
-module.exports = async function handler(req, res) { const body = req.body  {}; const version = body.version  "1.0"; const session = body.session || {};
-try { const message = body.request?.original_utterance  body.request?.command  "Поздоровайся и кратко расскажи, что умеешь.";
+module.exports = async function handler(req, res) { const body = req.body || {}; const version = body.version || "1.0"; const session = body.session || {};
+try { const message = body.request?.original_utterance || body.request?.command || "Привет";
 const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
-  throw new Error("Missing API key");
+  return res.status(200).json({
+    version,
+    session,
+    response: {
+      text: "Не настроен ключ Gemini в Vercel.",
+      end_session: false
+    }
+  });
 }
 
 const result = await fetch(
@@ -16,7 +23,9 @@ const result = await fetch(
     },
     body: JSON.stringify({
       contents: [
-        { parts: [{ text: message }] }
+        {
+          parts: [{ text: message }]
+        }
       ]
     })
   }
@@ -24,11 +33,21 @@ const result = await fetch(
 
 const data = await result.json();
 
-const answer = result.ok
-  ? data.candidates?.[0]?.content?.parts
-      ?.map(part => part.text || "")
-      .join("") || "Не удалось получить ответ."
-  : "Ошибка обращения к Gemini. Попробуй ещё раз.";
+if (!result.ok) {
+  return res.status(200).json({
+    version,
+    session,
+    response: {
+      text: "Ошибка запроса к Gemini. Проверь API-ключ и настройки API.",
+      end_session: false
+    }
+  });
+}
+
+const answer =
+  data.candidates?.[0]?.content?.parts
+    ?.map((part) => part.text || "")
+    .join("") || "Gemini не вернул ответ.";
 
 return res.status(200).json({
   version,
@@ -38,4 +57,4 @@ return res.status(200).json({
     end_session: false
   }
 });
-} catch (error) { return res.status(200).json({ version, session, response: { text: "Не удалось обработать запрос. Проверь ключ Gemini в Vercel.", end_session: false } }); } };
+} catch (error) { return res.status(200).json({ version, session, response: { text: "Ошибка при обработке запроса.", end_session: false } }); } };
