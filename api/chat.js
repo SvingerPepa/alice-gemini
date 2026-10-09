@@ -34,11 +34,14 @@ const result = await fetch(
 const data = await result.json();
 
 if (!result.ok) {
+  const errorMessage =
+    data.error?.message || JSON.stringify(data);
+
   return res.status(200).json({
     version,
     session,
     response: {
-      text: "Ошибка запроса к Gemini. Проверь API-ключ и настройки API.",
+      text: ("Ошибка Gemini: " + errorMessage).slice(0, 1000),
       end_session: false
     }
   });
