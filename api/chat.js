@@ -61,7 +61,7 @@ return res.status(200).json({
     text: answer.slice(0, 1024),
     end_session: false
   },
-  user_state_update: {
+  session_state_update: {
     history: updatedHistory
   }
 });
@@ -74,7 +74,7 @@ return res.status(200).json({
     text: "Произошла ошибка при обращении к нейросети. Попробуйте ещё раз.",
     end_session: false
   },
-  user_state_update: {
+  session_state_update: {
     history: history
   }
 });
